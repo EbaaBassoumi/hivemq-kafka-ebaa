@@ -1,20 +1,13 @@
 package app;
-import com.hivemq.client.mqtt.MqttClient;
-import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;
-import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.StreamsConfig;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.hivemq.client.mqtt.MqttGlobalPublishFilter.ALL;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public class MyMqttMain {
+public class Main {
 
 
     public static void main(String[] args) throws Exception {
