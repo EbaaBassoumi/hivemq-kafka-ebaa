@@ -1,5 +1,6 @@
 package app;
 
+import com.google.gson.Gson;
 import com.hivemq.client.mqtt.MqttClient;
 import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;
 import org.apache.kafka.common.serialization.Serdes;
@@ -9,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -55,11 +57,14 @@ public class HiveMqtt {
                 .topicFilter("owntracks/#")
                 .send();
 
+
         return client;
 
     }
 
+
     public void publishToCloudDemoData() throws FileNotFoundException {
+
         List<String> records = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader("src/main/resources/source_demo_data.txt"))) {
             String line;

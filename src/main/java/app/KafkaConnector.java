@@ -1,5 +1,7 @@
 package app;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -9,9 +11,9 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Properties;
+import java.util.*;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class KafkaConnector {
 
@@ -22,6 +24,8 @@ public class KafkaConnector {
     final String username = "b9a45yp0";
     final String password = "SSUMlcsd_D2BJ_6o11a0ohKZ6TCFFVRA";
 
+    // SLF4J
+    org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(KafkaConnector.class);
 
     public KafkaConnector() {
 
@@ -53,12 +57,26 @@ public class KafkaConnector {
 
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Arrays.asList(topic));
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+        List<GPSData> gpsDataList = new ArrayList<>();
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(1000);
             for (ConsumerRecord<String, String> record : records) {
-                System.out.printf("%s [%d] offset=%d, key=%s, value=\"%s\"\n",
-                        record.topic(), record.partition(),
-                        record.offset(), record.key(), record.value());
+                String recordValue = record.value().substring(0,record.value().indexOf("}")+1);
+                gpsDataList.add(gson.fromJson(recordValue, GPSData.class));
+                gpsDataList.forEach(gpsData -> {
+                    Map<String, Double> distanceForTheNewPoint = gpsData.geoDistance(gpsDataList);
+                    if(distanceForTheNewPoint.size() > 0 ){
+                        distanceForTheNewPoint.forEach((key,value) -> {
+                            logger.info("Distance Less than 3 meters was detected ! {} {} ", key, value );
+                        });
+                    }
+                });
+//                logger.info("{} {} offset={}, key={}, value={}",
+//                        record.topic(), record.partition(),
+//                        record.offset(), record.key(), record.value());
             }
         }
 
