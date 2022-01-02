@@ -29,10 +29,58 @@ public class GPSData {
                 .forEach(gpsData -> {
                     Point2D point2 = new Point2D.Double(gpsData.lat, gpsData.lon);
                     calc.setDestinationGeographicPoint(point2);
-                    if (calc.getOrthodromicDistance() > 3) // check if the disctance is more than 3 meters
+                    if (calc.getOrthodromicDistance() < 1 ) // check if the disctance is more than 1 meter
                         distanceResult.put(this.id + "-" + gpsData.id, calc.getOrthodromicDistance());
                 }
         );
         return distanceResult;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public long getOfficeId() {
+        return officeId;
+    }
+
+    public void setOfficeId(long officeId) {
+        this.officeId = officeId;
+    }
+
+    public float getLat() {
+        return lat;
+    }
+
+    public void setLat(float lat) {
+        this.lat = lat;
+    }
+
+    public float getLon() {
+        return lon;
+    }
+
+    public void setLon(float lon) {
+        this.lon = lon;
+    }
+
+    public long getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(long created_at) {
+        this.created_at = created_at;
     }
 }

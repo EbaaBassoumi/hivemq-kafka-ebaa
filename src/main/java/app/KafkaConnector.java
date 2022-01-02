@@ -12,6 +12,7 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -67,10 +68,15 @@ public class KafkaConnector {
                 String recordValue = record.value().substring(0,record.value().indexOf("}")+1);
                 gpsDataList.add(gson.fromJson(recordValue, GPSData.class));
                 gpsDataList.forEach(gpsData -> {
+                    // With every new point inserted, we check the distance with all other points
+                    // If the distance is lass or equal 3 meters, we log a messages with the Key
+                    // The Key is a combination between the two devices' IDs attached to the location points
                     Map<String, Double> distanceForTheNewPoint = gpsData.geoDistance(gpsDataList);
                     if(distanceForTheNewPoint.size() > 0 ){
                         distanceForTheNewPoint.forEach((key,value) -> {
-                            logger.info("Distance Less than 3 meters was detected ! {} {} ", key, value );
+                            if(value <= 1){
+                                logger.info("Distance Less than 1 meter was detected ! {} {} ", key, value );
+                            }
                         });
                     }
                 });

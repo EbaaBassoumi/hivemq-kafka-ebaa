@@ -54,7 +54,7 @@ public class HiveMqtt {
 
         //subscribe to the topic "my/test/topic"
         client.subscribeWith()
-                .topicFilter("owntracks/#")
+                .topicFilter("workspaceA1/#")
                 .send();
 
 
@@ -72,7 +72,7 @@ public class HiveMqtt {
                 records.add(line);
                 //publish a message to the topic "my/test/topic"
                 client.publishWith()
-                        .topic("owntracks/demo/data")
+                        .topic("workspaceA1/demo/data")
                         .payload(UTF_8.encode(line))
                         .send();
             }
